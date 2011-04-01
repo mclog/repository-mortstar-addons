@@ -1,0 +1,59 @@
+<scraperfunctions>
+	<!-- Get Rotten Tomatoes URL from IMDb ID -->
+	<GetRTRatingById dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseRT$$10&quot; cache=&quot;$$3-rt.html&quot;&gt;http://www.rottentomatoes.com/alias?type=imdbid&amp;s=$$3&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="\1" dest="3">
+				<expression>([0-9]{7})</expression>
+			</RegExp>
+			<RegExp input="$INFO[tomato]" output="Tom" dest="10">
+				<expression>TomatoMeter</expression>
+			</RegExp>
+			<RegExp input="$INFO[tomato]" output="Ave" dest="10">
+				<expression>Average Rating</expression>
+			</RegExp>
+			<RegExp input="$INFO[allcritics]" output="All" dest="10+">
+				<expression>All Critics</expression>
+			</RegExp>
+			<RegExp input="$INFO[allcritics]" output="Top" dest="10+">
+				<expression>Top Critics</expression>
+			</RegExp>
+			<expression/>
+		</RegExp>
+	</GetRTRatingById>			
+	<!-- TomatoMeter from All Critics -->
+	<ParseRTTomAll clearbuffers="no" dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;rating max=&quot;100&quot;&gt;\1&lt;/rating&gt;&lt;votes&gt;\2&lt;/votes&gt;" dest="2">
+				<expression>v:average&quot;&gt;.*?([0-9]+).*?count&quot;&gt;([0-9]+)</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</ParseRTTomAll>
+	<!-- TomatoMeter from Top Critics -->
+	<ParseRTTomTop clearbuffers="no" dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;rating max=&quot;100&quot;&gt;\1&lt;/rating&gt;&lt;votes&gt;\2&lt;/votes&gt;" dest="2">
+				<expression>&quot;top-critics-numbers&quot;.*?([0-9]+).*?Critic Reviews: ([0-9]+)</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</ParseRTTomTop>
+	<!-- Average Rating from All Critics -->
+	<ParseRTAveAll clearbuffers="no" dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;rating&gt;\1&lt;/rating&gt;&lt;votes&gt;\2&lt;/votes&gt;" dest="2">
+				<expression>&lt;p class=&quot;critic_stats&quot;&gt;.*?([0-9.]+).*?count&quot;&gt;([0-9]+)</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</ParseRTAveAll>
+	<!-- Average Rating from Top Critics -->
+	<ParseRTAveTop clearbuffers="no" dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;rating&gt;\1&lt;/rating&gt;&lt;votes&gt;\2&lt;/votes&gt;" dest="2">
+				<expression>&quot;top-critics-numbers&quot;.*?Average.*?([0-9.]+).*?Critic Reviews: ([0-9]+)</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</ParseRTAveTop>
+</scraperfunctions>

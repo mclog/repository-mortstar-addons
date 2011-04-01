@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addons>
+<addon id="metadata.common.rt.com"
+       name="Rotten Tomatoes common scraper functions"
+       version="1.0.0"
+       provider-name="mortstar">
+  <requires>
+    <import addon="xbmc.metadata" version="1.0"/>
+  </requires>
+  <extension point="xbmc.metadata.scraper.library"
+             library="rt.xml"/>
+  <extension point="xbmc.addon.metadata">
+    <platform>all</platform>
+    <summary lang="en">RT Scraper Library</summary>
+    <description lang="en">Download ratings from www.rottentomatoes.com</description>
+  </extension>
+</addon>
+
+<addon id="metadata.imdbrt.com"
+       name="IMDb + RT"
+       version="1.2.0"
+       provider-name="mortstar (IMDb by Team XBMC)">
+  <requires>
+    <import addon="xbmc.metadata" version="1.0"/>
+    <import addon="metadata.common.themoviedb.org" version="1.0.7"/>
+    <import addon="metadata.common.movieposterdb.com" version="1.0.4"/>
+    <import addon="metadata.common.imdb.com" version="2.0.8"/>
+    <import addon="metadata.common.impa.com" version="1.0.3"/>
+    <import addon="metadata.common.hdtrailers.net" version="1.0.6"/>
+	<import addon="metadata.common.rt.com" version="1.0.0"/>
+  </requires>
+  <extension point="xbmc.metadata.scraper.movies"
+             language="en"
+             library="imdbrt.xml"/>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Movie information from IMDb + ratings from Rotten Tomatoes</summary>
+    <description lang="en">The Internet Movie Database (IMDb) is a HUGE collection of movie information, this addon will gather this data to populate your movie library. Rotten Tomatoes aggregates the reviews from movie critics and provides a 'TomatoMeter' (percentage of critics who have given the movie a positive review) as well as an Average Rating of the scores awarded by the critics. This addon can collect either of these two values as a replacement for IMDb's, userbase derided, rating.</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
+<addon	id="repository.mortstar.addons"
+		name="mortstar's add-ons"
+		version="1.1.0"
+		provider-name="mortstar">
+	<extension	point="xbmc.addon.repository"
+				name="mortstar's add-on">
+		<info compressed="false">http://repository-mortstar-addons.googlecode.com/svn/addons/addons.xml</info>
+		<checksum>http://repository-mortstar-addons.googlecode.com/svn/addons/addons.xml.md5</checksum>
+		<datadir zip="true">http://repository-mortstar-addons.googlecode.com/svn/addons/</datadir>
+	</extension>
+	<extension point="xbmc.addon.metadata">
+		<summary>Install mortstar's add-ons</summary>
+		<description>Download and install mortstar's add-ons</description>
+		<disclaimer></disclaimer>
+		<platform>all</platform>
+	</extension>
+</addon>
+</addons>

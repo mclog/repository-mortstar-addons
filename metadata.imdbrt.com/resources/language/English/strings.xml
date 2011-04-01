@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- IMDb general settings labels -->
+    <string id="30000">Enable full cast credits</string>
+    <string id="30001">Enable fanart from themoviedb.org</string>
+    <string id="30002">Enable posters from themoviedb.org</string>
+    <string id="30003">Enable posters from IMPAwards</string>
+    <string id="30004">Enable posters from MoviePosterDB</string>
+    <string id="30006">Enable trailers from HD-Trailers.net</string>
+    <string id="30005">Fall back on IMDb trailers</string>
+    <string id="30007">IMDb Poster &amp; Actor Thumb(s) Size</string>
+    <string id="30008">Preferred Title Language from</string>
+	<!-- RT rating settings labels -->
+	<string id="30100">Rotten Tomatoes</string>
+	<string id="30105">Enable ratings from Rotten Tomatoes (IMDb ratings used if off)</string>
+	<string id="30110">Rating generated using</string>
+	<string id="30115">Use the score aggregated from</string>
+</strings>
+

@@ -1,0 +1,13 @@
+[B]1.2.1[/B]
+- Made compatible with official XBMC Repository requirements
+
+[B]1.2.0[/B]
+- Rotten Tomatoes functions extracted to external scraping library
+
+[B]1.1.0[/B]
+- Rotten Tomatoes scraping options (Top/All Critics - TomatoMeter/Average Rating)
+- Settings categorised
+
+[B]1.0.0[/B]
+- Initial scraper creation
+- Team XBMC provided IMDb (version 2.1.8) scraper plus ability to grab Average Rating from Rotten Tomatoes
