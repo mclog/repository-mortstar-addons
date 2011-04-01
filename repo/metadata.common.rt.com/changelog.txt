@@ -1,0 +1,2 @@
+[B]1.0.0[/B]
+- Initial creation of Rotten Tomatoes common ratings scraping library
