@@ -1,3 +1,6 @@
+[B]1.2.2[/B]
+- Brought up-to-date with Team XBMC's IMDb scraper changes i.e. "fixed: actor roles and remove scraping of imdb trailers"
+
 [B]1.2.1[/B]
 - Made compatible with official XBMC Repository requirements
 
