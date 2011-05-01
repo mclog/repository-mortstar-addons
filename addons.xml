@@ -39,6 +39,22 @@
   </extension>
 </addon>
 
+<addon id="plugin.video.lof" name="LiveOnlineFooty" version="1.5.0" provider-name="myksterx and mclog">
+    <requires>
+        <import addon="xbmc.python" version="1.0"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <platform>all</platform>
+        <minversion>31632</minversion>
+        <summary lang="en">Watch LiveOnlineFooty.com with XBMC</summary>
+        <description lang="en">Watch premium sports streaming services with XBMC. Requires a LiveOnlineFooty user account. See http://www.liveonlinefooty.com for more details.</description>
+        <disclaimer lang="en">This plugin may not be legal in your country. Please check local laws before use.</disclaimer>
+    </extension>
+</addon>
+
 <addon	id="repository.mortstar.addons"
 		name="mortstar's repo"
 		version="1.2.0"
