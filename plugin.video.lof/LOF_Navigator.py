@@ -18,12 +18,11 @@ __scraper__ = LOF_Scraper.LOF_Scraper()
 
 class LOF_Navigator:
 
-
     def __init__(self):
         self.cookie = []
         self.username = lof_addon.getSetting('username')
         self.password=lof_addon.getSetting('password')
-        self.artwork = ''.join([((os.getcwd()).strip('modules')),'\image\\'])
+        self.artwork = os.path.join(lof_addon.getAddonInfo('path'),'image')
         self.match_chan_regex = __scraper__.match_chan_regex
         self.matchchan = re.compile(self.match_chan_regex, re.DOTALL|re.M)
 

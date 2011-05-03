@@ -1,3 +1,6 @@
+[B]Version 1.5.1[/B]
+- Fixed bug in path creation for ATV2
+
 [B]Version 1.5.0[/B]
 - Large code clean-up
 

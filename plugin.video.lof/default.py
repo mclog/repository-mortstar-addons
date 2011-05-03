@@ -36,17 +36,14 @@ import xbmcplugin
 import xbmcaddon
 
 
-artwork = ''.join([os.getcwd(),'\image\\'])
-modules = ''.join([os.getcwd(),'\modules\\'])
-sys.path.append(modules)
+lof_addon = xbmcaddon.Addon("plugin.video.lof");
+artwork = os.path.join([lof_addon.getAddonInfo('path'),'image'])
 
 import LOF_Scraper
 import LOF_Navigator
 
 __scraper__ = LOF_Scraper.LOF_Scraper()
 __navigator__ = LOF_Navigator.LOF_Navigator()
-
-lof_addon = xbmcaddon.Addon("plugin.video.lof");
 
 username=lof_addon.getSetting("username")
 password=lof_addon.getSetting("password")
