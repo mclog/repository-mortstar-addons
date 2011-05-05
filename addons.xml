@@ -39,7 +39,7 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.lof" name="LiveOnlineFooty" version="1.5.1" provider-name="myksterx and mclog">
+<addon id="plugin.video.lof" name="LiveOnlineFooty" version="1.6.0" provider-name="myksterx and mclog">
     <requires>
         <import addon="xbmc.python" version="1.0"/>
     </requires>

@@ -61,7 +61,14 @@ class LOF_Scraper:
 	tc2 = time.mktime(tc1)
 	tc3 = time.ctime(tc2 - time.timezone)
 	tc4 = time.strptime(tc3, '%a %b %d %H:%M:00 %Y')
-	tc5 = time.strftime('%H:%M | %a %b %d', tc4)
+	ord_date = self.date_to_ordinal(tc4.tm_mday)
+	tc5 = time.strftime('%H:%M | %a ' + ord_date +' %b', tc4)
 	slist = [tc5, ' | ', match_title]
 	eventinfo = ''.join(slist)
-	return eventinfo
+	return eventinfo, match_title
+
+    def date_to_ordinal(self, date):
+        if 10 <= date % 100 < 20:
+            return str(date) + 'th'
+        else:
+            return  str(date) + {1 : 'st', 2 : 'nd', 3 : 'rd'}.get(date % 10, "th")

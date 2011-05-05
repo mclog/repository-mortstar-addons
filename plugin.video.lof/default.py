@@ -18,9 +18,6 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#Version History:
-#13.04.2011 first version, rough draft
-
 import os
 import sys
 
@@ -35,12 +32,11 @@ import xbmcgui
 import xbmcplugin
 import xbmcaddon
 
-
 lof_addon = xbmcaddon.Addon("plugin.video.lof");
 artwork = os.path.join([lof_addon.getAddonInfo('path'),'image'])
 
-import LOF_Scraper
-import LOF_Navigator
+from modules import LOF_Scraper
+from modules import LOF_Navigator
 
 __scraper__ = LOF_Scraper.LOF_Scraper()
 __navigator__ = LOF_Navigator.LOF_Navigator()
@@ -52,13 +48,11 @@ password=lof_addon.getSetting("password")
 
 def settings():
     if lof_addon.getSetting("username") != '' and lof_addon.getSetting("password") != '':
-        link = Login(0)
-            
+        link = Login()
         # Check Username and Password
         if ((re.search(__scraper__.unapwd_regex, link)) == None):
             # Incorrect UserName and/or Password
             check_settings('-- Your username and/or password is incorrect. --')
-
         # Check Subscription
         if ((re.search(__scraper__.sub_regex, link)) == None):
             # Invalid Subscription
@@ -119,22 +113,12 @@ def check_settings(error_string):
     xbmcplugin.addDirectoryItem(int(sys.argv[1]), u, listfolder, isFolder=1)
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
-
-
-def Login(alt):
+def Login():
     cj = cookielib.CookieJar()
     opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
     login_data = urllib.urlencode({'amember_login' : username, 'amember_pass' : password})
     opener.open(__scraper__.loginurl, login_data)
-
-    # At Login Checks
-    if (alt==0):
-        resp = opener.open(__scraper__.memberurl)
-    # At PlayVideo
-    else:
-        resp = opener.open(__scraper__.channelurl %alt)
-  
-    link = resp.read()
+    link = opener.open(__scraper__.memberurl).read()
     return link
 
 #main program
@@ -160,3 +144,7 @@ elif mode==2:
     __navigator__.list_schedule()
 elif mode==3:
     lof_addon.openSettings(url=sys.argv[0])
+elif mode==4:
+    __navigator__.list_channel_schedules(url)
+elif mode==5:
+    __navigator__.play_stream(url)

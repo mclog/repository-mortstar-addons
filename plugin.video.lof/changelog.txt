@@ -1,3 +1,9 @@
+[B]Version 1.6.0[/B]
+- Made loading channel and schedule lists really, really fast :)
+- In schedule, changed [N/A] text to Coming Soon
+- In schedule, made dates ordinal, e.g instead of 08, it says 8th
+- In schedule, added subfolders for each match, as they can have multiple channels
+
 [B]Version 1.5.1[/B]
 - Fixed bug in path creation for ATV2
 
@@ -28,5 +34,4 @@
 - Added site login and authentication
 
 [B]Version 1.0[/B]
-
 - Basic playback of Channel 1 - 16.
