@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<scraper framework="1.1" date="2011-03-30">
+<scraper framework="1.1" date="2011-05-15">
 	<NfoUrl dest="3">
 		<RegExp input="$$1" output="&lt;url&gt;http://akas.\1/title/tt\2/&lt;/url&gt;&lt;id&gt;tt\2&lt;/id&gt;" dest="3">
 			<expression clear="yes" noclean="1">(imdb.com)/Title\?([0-9]*)</expression>
@@ -58,6 +58,9 @@
 			</RegExp>
 			<RegExp input="$$1" output="&lt;mpaa&gt;\1&lt;/mpaa&gt;" dest="5+">
 				<expression>MPAA&lt;/a&gt;\)&lt;/h4&gt;\n?([^&lt;]*)</expression>
+			</RegExp>
+			<RegExp input="$$2" output="&lt;chain function=&quot;GetIMDBCert&quot;&gt;$$2&lt;/chain&gt;" dest="5+">
+				<expression/>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;tagline&gt;\1&lt;/tagline&gt;" dest="5+">
 				<expression>&lt;h4[^&gt;]*?&gt;Taglines:&lt;/h4&gt;\n?([^&lt;]*)</expression>
@@ -142,7 +145,7 @@
 	</GetDetails>
 	<GetIMDBAKATitlesById dest="5">
 		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;$$1-combined.html&quot; function=&quot;ParseIMDBAKATitles&quot;&gt;http://akas.imdb.com/title/$$1/combined&lt;/url&gt;&lt;/details&gt;" dest="5">
-			<expression noclean="1" />
+			<expression noclean="1"/>
 		</RegExp>
 	</GetIMDBAKATitlesById>
 	<ParseIMDBAKATitles dest="5">
@@ -204,7 +207,34 @@
 			<RegExp input="$$4" output="\1" dest="2">
 				<expression>(.+)</expression>
 			</RegExp>
-			<expression noclean="1" />
+			<expression noclean="1"/>
 		</RegExp>
 	</ParseIMDBAKATitles>
+	<GetIMDBCert dest="5">
+		<RegExp input="$INFO[Cert]" output="&lt;details&gt;&lt;url cache=&quot;$$1-combined.html&quot; function=&quot;ParseIMDBUKCert&quot;&gt;http://akas.imdb.com/title/$$1/combined&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression>UK</expression>
+		</RegExp>
+		<RegExp input="$INFO[Cert]" output="&lt;details&gt;&lt;url cache=&quot;$$1-combined.html&quot; function=&quot;ParseIMDBAusCert&quot;&gt;http://akas.imdb.com/title/$$1/combined&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression>Australia</expression>
+		</RegExp>
+	</GetIMDBCert>
+	<ParseIMDBUKCert dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;mpaa&gt;\1&lt;/mpaa&gt;&lt;/details&gt;" dest="5">
+			<expression>(?:&gt;\s*UK:)((?:U)|(?:PG)|(?:12)|(?:12A)|(?:15)|(?:18)|(?:R18))(?:&lt;/a&gt;)</expression>
+		</RegExp>
+	</ParseIMDBUKCert>
+	<ParseIMDBAusCert dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;mpaa&gt;\1&lt;/mpaa&gt;&lt;/details&gt;" dest="5">
+			<expression>(?:&gt;\s*Australia:)((?:G)|(?:PG)|(?:M)|(?:MA)|(?:R)|(?:X))(?:&lt;/a&gt;)</expression>
+		</RegExp>
+		<RegExp input="$$5" output="&lt;details&gt;&lt;mpaa&gt;MA15+&lt;/mpaa&gt;&lt;/details&gt;" dest="5">
+			<expression>MA</expression>
+		</RegExp>
+		<RegExp input="$$5" output="&lt;details&gt;&lt;mpaa&gt;R18+&lt;/mpaa&gt;&lt;/details&gt;" dest="5">
+			<expression>R</expression>
+		</RegExp>
+		<RegExp input="$$5" output="&lt;details&gt;&lt;mpaa&gt;X18+&lt;/mpaa&gt;&lt;/details&gt;" dest="5">
+			<expression>X</expression>
+		</RegExp>
+	</ParseIMDBAusCert>
 </scraper>

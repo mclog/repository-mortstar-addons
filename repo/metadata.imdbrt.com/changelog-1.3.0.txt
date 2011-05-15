@@ -1,3 +1,6 @@
+[B]1.3.0[/B]
+- Added ability to choose certification from different countries
+
 [B]1.2.2[/B]
 - Brought up-to-date with Team XBMC's IMDb scraper changes i.e. "fixed: actor roles and remove scraping of imdb trailers"
 
