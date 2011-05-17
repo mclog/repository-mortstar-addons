@@ -15,5 +15,6 @@
 	<string id="30105">Enable ratings from Rotten Tomatoes</string>
 	<string id="30110">Rating generated using</string>
 	<string id="30115">Use the score aggregated from</string>
+	<string id="30120">Use critics' consensus as movie outline</string>
 </strings>
 

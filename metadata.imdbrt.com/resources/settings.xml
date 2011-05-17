@@ -17,6 +17,7 @@
 	</category>
 	<!-- RT rating settings -->
 	<category label="30100">
+		<setting label="30120" type="bool" id="rtoutline" default="false"/>
 		<setting label="30105" type="bool" id="rtrating" default="true"/>
 		<setting type="sep"/>
 		<setting label="30110" type="labelenum" values="TomatoMeter|Average Rating" id="tomato" default="TomatoMeter" enable="!eq(-2,false)"/>
