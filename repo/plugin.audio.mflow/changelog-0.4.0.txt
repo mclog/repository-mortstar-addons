@@ -1,0 +1,3 @@
+[B]Version 0.4[/B]
+- Added ability to "Flow" songs when logged in
+- Playlist code improved to prevent needless regeneration of playlist

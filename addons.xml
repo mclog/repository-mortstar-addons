@@ -39,6 +39,25 @@
   </extension>
 </addon>
 
+<addon id="plugin.audio.mflow"
+	   version="0.4.0"
+	   name="mFlow"
+	   provider-name="Sam Price">
+	<requires>
+	  <import addon="xbmc.python" version="1.0"/>
+	  <import addon="script.module.simplejson" version="2.0.10"/>
+	</requires>
+	<extension point="xbmc.python.pluginsource"
+			   library="default.py">
+			   <provides>audio</provides>
+	</extension>
+	<extension point="xbmc.addon.metadata">
+	  <summary>mFlow audio plugin</summary>
+	  <description>A plugin for streaming music service mFlow. </description>
+	  <platform>all</platform>
+	</extension>
+</addon>
+
 <addon id="plugin.video.lof" name="LiveOnlineFooty" version="1.6.0" provider-name="myksterx and mclog">
     <requires>
         <import addon="xbmc.python" version="1.0"/>
