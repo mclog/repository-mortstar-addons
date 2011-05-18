@@ -1,8 +1,0 @@
-[B]1.1.0[/B]
-- Added ability to grab critics' consensus to 'outline' of movie
-
-[B]1.0.1[/B]
-- Scraper now fallsback to All Critics ratings if Top Critics is unavailable
-
-[B]1.0.0[/B]
-- Initial creation of Rotten Tomatoes common ratings scraping library

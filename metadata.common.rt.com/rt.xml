@@ -17,14 +17,14 @@
 			<expression>([0-9]{7})</expression>
 		</RegExp>
 	</GetRTRatingById>
-	
+
 	<!-- Get Rotten Tomatoes URL from IMDb ID for outline -->
 	<GetRTOutlineById dest="5">
 		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseRTOutline&quot; cache=&quot;\1-rt.html&quot;&gt;http://www.rottentomatoes.com/alias?type=imdbid&amp;s=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression>([0-9]{7})</expression>
 		</RegExp>
 	</GetRTOutlineById>
-	
+
 	<!-- TomatoMeter from All Critics -->
 	<ParseRTTomAll dest="5">
 		<RegExp input="$$1" output="&lt;details&gt;&lt;rating max=&quot;100&quot;&gt;\1&lt;/rating&gt;&lt;votes&gt;\2&lt;/votes&gt;&lt;/details&gt;" dest="5">
@@ -65,6 +65,9 @@
 	<ParseRTOutline dest="5">
 		<RegExp input="$$1" output="&lt;details&gt;&lt;outline&gt;\1&lt;/outline&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1">critic_consensus&quot;&gt;([^&lt;]+)&lt;/p&gt;</expression>
+		</RegExp>
+		<RegExp input="$$5" output="" dest="5">
+			<expression>&lt;details&gt;&lt;outline&gt;No consensus yet.&lt;/outline&gt;&lt;/details&gt;</expression>
 		</RegExp>
 	</ParseRTOutline>
 </scraperfunctions>
