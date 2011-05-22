@@ -2,5 +2,6 @@
 <settings>
    <setting id="username" type="text" label="Username" default=""/>
    <setting id="password" type="text" option="hidden" label="Password" default="" />
-   <setting id="itemlimit" type="labelenum" label="Maximum number of items to show" default="50" values="25|50|75||100|150|200|250|" />
+   <setting id="itemlimit" type="labelenum" label="Maximum number of items to show" default="50" 
+values="25|50|75||100|150|200|250|" />
 </settings>

@@ -58,7 +58,7 @@ class creator:
 		return result["Flows"]
 
 	def mflowhashflows(self,query):
-		URL=u"http://ws.mflow.com/DigitalDistribution.SearchIndex.Host.WebService/Public/Json/SyncReply/SearchFlows?HashTags="+query+"&Take="+self.take
+		URL=u"http://ws.mflow.com/DigitalDistribution.SearchIndex.Host.WebService/Public/Json/SyncReply/SearchFlows?HashTags="+query+"&Take="+self.take+"&DuplicateContentFilter=true"
 		result=simplejson.load(urllib.urlopen(URL))
 		if result["FlowPostsTotalCount"]>0:
 			return result["FlowPosts"]
@@ -66,7 +66,7 @@ class creator:
 			return ''
 		
 	def mflowuserflows(self,sessionid,userid):
-		URL=u"http://ws.mflow.com/DigitalDistribution.UserCatalogue.Host.WebService/Public/Json/SyncReply/SearchFlowPosts?UserId="+userid+"&Take="+self.take
+		URL=u"http://ws.mflow.com/DigitalDistribution.UserCatalogue.Host.WebService/Public/Json/SyncReply/SearchFlowPosts?UserId="+userid+"&Take="+self.take+"&DuplicateContentFilter=true"
 		result=simplejson.load(urllib.urlopen(URL))
 		return result["Posts"]
 
@@ -76,13 +76,13 @@ class creator:
 			take="100"
 		else: 
 			take=str(self.take)
-		URL=u"http://ws.mflow.com/DigitalDistribution.UserCatalogue.Host.WebService/Public/Json/SyncReply/GetFavouriteUserFlows?UserId="+userid+"&PreviewUserId="+userid+"&Take="+take
+		URL=u"http://ws.mflow.com/DigitalDistribution.UserCatalogue.Host.WebService/Public/Json/SyncReply/GetFavouriteUserFlows?UserId="+userid+"&PreviewUserId="+userid+"&Take="+take+"&DuplicateContentFilter=true"
 		result=simplejson.load(urllib.urlopen(URL))
 		return result["Flows"]
 
 	def mflowfavouritehashflows(self,sessionid,userid):
 
-		URL=u"http://ws.mflow.com/DigitalDistribution.UserCatalogue.Host.WebService/Public/Json/SyncReply/GetFavouriteHashTagsPage?UserId="+userid+"&PreviewUserId="+userid+"&Take="+self.take
+		URL=u"http://ws.mflow.com/DigitalDistribution.UserCatalogue.Host.WebService/Public/Json/SyncReply/GetFavouriteHashTagsPage?UserId="+userid+"&PreviewUserId="+userid+"&Take="+self.take+"&DuplicateContentFilter=true"
 		result=simplejson.load(urllib.urlopen(URL))
 		return result["Flows"]
 
@@ -192,7 +192,8 @@ class creator:
 		return listing
 
 	def playlistflows(self, id, sessionid,userid):
-		URL=u"http://ws.mflow.com/DigitalDistribution.UserCatalogue.Host.WebService/Public/Json/SyncReply/GetUserPlaylistFlows?UserPlaylistId="+str(id)+"&SessionId="+str(sessionid)+"&UserId="+str(userid)
+		URL=u"http://ws.mflow.com/DigitalDistribution.UserCatalogue.Host.WebService/Public/Json/SyncReply/GetUserPlaylistFlows?UserPlaylistId="+str(id)+"&SessionId="+str(sessionid)+"&UserId="+str(userid)+"&Take="+self.take
+		result=simplejson.load(urllib.urlopen(URL))
 		result=simplejson.load(urllib.urlopen(URL))
 		listing=[]	
 		for res in result["PlaylistFlows"]:
@@ -261,27 +262,37 @@ class creator:
 		toppath="http://fs.mflow.com/"
 		listing=[]
 		filteredresults=self.removeDuplicates(results)
+		unavailable=0
 		for flow in filteredresults:
-                        if "RelativeOggPreviewPath" in flow:
+			uri=""
+                        try:
 				uri=toppath+flow["RelativeOggPreviewPath"]
-			else: 
-				uri=toppath+flow["PreviewAssetPath"]
-			
+			except:
+				pass
+			if uri=="":
+				try:
+					uri=toppath+flow["PreviewAssetPath"]
+				except:
+					unavailable=1
 			title=flow["TrackName"]
 			album=flow["AlbumName"]
 			artist=flow["ArtistName"]
 			urn=flow["TrackUrn"]
-			if "RelativeAlbumImagePath" in flow:
+			flowimg=""
+			try:
 				flowimg=toppath+flow["RelativeAlbumImagePath"]
+			except:	
+				pass
 
-			else:
+			if flowimg=="":
 				try:
 					flowimg=toppath+flow["ImageAssetPath"]
 					
 				except:
 					art=self.noteImg
 			label=title+" - " + album+ " - " + artist
-			listing.append([label,uri, title, artist,album,flowimg, urn])
+			if unavailable!=1:
+				listing.append([label,uri, title, artist,album,flowimg, urn])
 		return listing
 	
 	def mflowtrack(self,results, query):
@@ -289,7 +300,11 @@ class creator:
 		filteredresults=self.removeDuplicates(results)
 		listing=[]
 		for res in filteredresults:
-				uri=toppath+res['RelativePreviewPath']	
+				unavailable=0
+				try:
+					uri=toppath+res['RelativePreviewPath']
+				except:
+					unavailable=1	
 				title=res['Title']
 				artist=res['ArtistName']
 				album=res['AlbumName']
@@ -303,11 +318,11 @@ class creator:
 				urn=res["TrackUrn"]
 				duration = res["DurationMs"]
 				duration=duration/1000
-
-				if query=="xalbumsongsx":
-					listing.append([label,uri, title, artist,album,art,duration, trackno, urn])
-				else:
-					listing.append([label,uri, title, artist,album, art, duration, urn])
+				if unavailable!=1:
+					if query=="xalbumsongsx":
+						listing.append([label,uri, title, artist,album,art,duration, trackno, urn])
+					else:
+						listing.append([label,uri, title, artist,album, art, duration, urn])
 		
 		return listing
 

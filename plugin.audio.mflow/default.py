@@ -99,7 +99,24 @@ if action==None:
 	os.remove(sessionidJar)
   except:
 	pass
-  sender.userfolders()
+  username=xbmcplugin.getSetting(int(sys.argv[1]),"username")
+  password=xbmcplugin.getSetting(int(sys.argv[1]),"password")
+  if username!="" and password!="":
+	    
+         progress = xbmcgui.DialogProgress()
+         progress.create("XBMC", "Trying to log into mFlow")
+         auth=creator.mflowlogin(username,password)
+  else:
+        auth=""
+  if len(auth)==2:
+   userid=auth[0]
+   sessionid=auth[1]
+   sender.userfolders(sessionid,userid)
+   doinguserfolders=1
+
+  else:
+   sender.userfolders()
+
 elif action=="Search Albums":
   query=get_keyboard(default="", heading="Search for Albums")
   #print "Userid:"+userid + " " + sessionid
@@ -172,23 +189,9 @@ elif action=="Trending Tags":
 	sender.sendartists(creator.mflowtags(results))
 
 elif action=="Login":
-	username=xbmcplugin.getSetting(int(sys.argv[1]),"username")
-	password=xbmcplugin.getSetting(int(sys.argv[1]),"password")
-	if username!="" and password!="":
-		auth=creator.mflowlogin(username,password)
-	else: 
-		dialog.ok("Error", "Username and/or Password not configured")
-		auth=""
-	if len(auth)==2:
-	 userid=auth[0]
-	 sessionid=auth[1]
-	 print userid
-	 print sessionid
-	 sender.userfolders(sessionid,userid)
-	 doinguserfolders=1
-	 
-	else:
-	 sender.userfolders()
+	
+	dialog.ok("Error", "Username and Password must be set in plugin settings.", "if you are not an mFlow user sign up at", "http://beta.mflow.com/signup?invitecode=8GNXIH")
+	cancel=1
 
 elif "flowsong" in action:
 	auth=action.rsplit(":",2)
