@@ -1,4 +1,4 @@
-[B]Version 0.4.1[/b]
+[B]Version 0.4.1[/B]
 - Log into mFlow automatically if user and password set.
 - Respect user's chosen number of items for playlists
 
