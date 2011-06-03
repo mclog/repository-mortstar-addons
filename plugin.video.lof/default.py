@@ -22,66 +22,12 @@ import os
 import sys
 
 import urllib
-import urllib2
-import cookielib
-
-import re
-import time
-
-import xbmcgui
-import xbmcplugin
 import xbmcaddon
-
-lof_addon = xbmcaddon.Addon("plugin.video.lof");
-artwork = os.path.join([lof_addon.getAddonInfo('path'),'image'])
-
-from modules import LOF_Scraper
 from modules import LOF_Navigator
 
-__scraper__ = LOF_Scraper.LOF_Scraper()
+lof_addon = xbmcaddon.Addon("plugin.video.lof");
 __navigator__ = LOF_Navigator.LOF_Navigator()
 
-username=lof_addon.getSetting("username")
-password=lof_addon.getSetting("password")
-
-#Define Settings
-
-def settings():
-    if lof_addon.getSetting("username") != '' and lof_addon.getSetting("password") != '':
-        link = Login()
-        # Check Username and Password
-        if ((re.search(__scraper__.unapwd_regex, link)) == None):
-            # Incorrect UserName and/or Password
-            check_settings('-- Your username and/or password is incorrect. --')
-        # Check Subscription
-        if ((re.search(__scraper__.sub_regex, link)) == None):
-            # Invalid Subscription
-            check_settings('-- You don\'t have a valid subscription. --')
-        else:
-            # Valid Subscription
-            menu()
-    else:
-        check_settings('-- Settings not defined or there is a problem.  Please check your settings. --')
-  
-#Index
-def menu():
-
-    u=sys.argv[0]+"?url=Channels&mode=1"
-    listfolder = xbmcgui.ListItem('Channels')
-    listfolder.setInfo('video', {'Title': 'Channels'})
-    xbmcplugin.addDirectoryItem(int(sys.argv[1]), u, listfolder, isFolder=1)
-
-    u=sys.argv[0]+"?url=Schedule&mode=2"
-    listfolder = xbmcgui.ListItem('Schedule')
-    listfolder.setInfo('video', {'Title': 'Schedule'})
-    xbmcplugin.addDirectoryItem(int(sys.argv[1]), u, listfolder, isFolder=1)
-  
-    u=sys.argv[0]+"?url=Settings&mode=3"
-    listfolder = xbmcgui.ListItem('Settings')
-    listfolder.setInfo('video', {'Title': 'Settings'})
-    xbmcplugin.addDirectoryItem(int(sys.argv[1]), u, listfolder, isFolder=1)
-
-    xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 def get_params():
     param=[]
@@ -100,27 +46,6 @@ def get_params():
                 param[splitparams[0]]=splitparams[1]
     return param
 
-def check_settings(error_string):
-
-    u=sys.argv[0]+"?url=Settings&mode=3"
-    listfolder = xbmcgui.ListItem(error_string)
-    listfolder.setInfo('video', {'Title': 'Settings not defined or there is a problem.  Please check your settings.'})
-    xbmcplugin.addDirectoryItem(int(sys.argv[1]), u, listfolder, isFolder=1)
-
-    u=sys.argv[0]+"?url=Settings&mode=3"
-    listfolder = xbmcgui.ListItem('Settings')
-    listfolder.setInfo('video', {'Title': 'Settings'})
-    xbmcplugin.addDirectoryItem(int(sys.argv[1]), u, listfolder, isFolder=1)
-    xbmcplugin.endOfDirectory(int(sys.argv[1]))
-
-def Login():
-    cj = cookielib.CookieJar()
-    opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
-    login_data = urllib.urlencode({'amember_login' : username, 'amember_pass' : password})
-    opener.open(__scraper__.loginurl, login_data)
-    link = opener.open(__scraper__.memberurl).read()
-    return link
-
 #main program
 
 params=get_params()
@@ -137,7 +62,7 @@ except:
     pass
 
 if mode==None or url==None or len(url)<1:
-    settings()
+    __navigator__.settings()
 elif mode==1:
     __navigator__.list_channels()
 elif mode==2:
