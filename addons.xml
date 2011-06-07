@@ -91,4 +91,25 @@
 		<platform>all</platform>
 	</extension>
 </addon>
+
+<addon id="script.lastfmplaylistgeneratorPM"
+       name="Last.FM Playlist Generator (Partymode)"
+       version="1.0.4"
+       provider-name="ErlendSB">
+  <requires>
+    <import addon="xbmc.python" version="1.0"/>
+    <import addon="script.module.pysqlite" version="2.5.6"/>
+    <import addon="script.module.pil" version="1.1.7"/>
+  </requires>
+  <extension point="xbmc.python.script"
+             library="default.py">
+	  <provides>executable</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <platform>all</platform>
+    <minversion>1</minversion>
+    <summary>Last.FM Playlist Generator (Partymode)</summary>
+    <description>Create smart playlists with the help of Last.FM</description>
+  </extension>
+</addon>
 </addons>
