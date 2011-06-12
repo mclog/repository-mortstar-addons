@@ -10,3 +10,10 @@
 1.0.4
 - Added: Add artist fanart to the listitem
 - Changed: Randomize last.fm result
+1.0.5
+- Added: Settings for:
+	Allow tracks repeat
+	Prefer different artist
+	Number of tracks to add
+	Dealy before searching
+	

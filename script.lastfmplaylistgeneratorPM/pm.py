@@ -1,5 +1,5 @@
 """
-    Script for generating smart playlists based on a seeding track and last.fm api
+	Script for generating smart playlists based on a seeding track and last.fm api
 	Created by: ErlendSB
 """
 
@@ -16,13 +16,17 @@ from os import remove
 
 class MyPlayer( xbmc.Player ) :
 	countFoundTracks = 0
-	foundTracks = []
+	addedTracks = []
 	currentSeedingTrack = 0
 	firstRun = 0
 	SCRIPT_NAME = "LAST.FM Playlist Generator"
 
 	
 	__settings__ = xbmcaddon.Addon(id='script.lastfmplaylistgeneratorPM')
+	allowtrackrepeat =  __settings__.getSetting( "allowtrackrepeat" )
+	preferdifferentartist = __settings__.getSetting( "preferdifferentartist" )
+	numberoftrackstoadd = ( 1, 3, 5, 10, )[ int( __settings__.getSetting( "numberoftrackstoadd" ) ) ]
+	delaybeforesearching= ( 2, 10, 30, )[ int( __settings__.getSetting( "delaybeforesearching" ) ) ]
 	apiPath = "http://ws.audioscrobbler.com/2.0/?api_key=71e468a84c1f40d4991ddccc46e40f1b"
 	
 	def __init__ ( self ):
@@ -37,8 +41,8 @@ class MyPlayer( xbmc.Player ) :
 		#print "init MyPlayer"
 	
 	def onPlayBackStarted(self):
-		print "onPlayBackStarted"
-		xbmc.sleep(2000)
+		print "onPlayBackStarted waiting:  " + str(self.delaybeforesearching) +" seconds"
+		xbmc.sleep(self.delaybeforesearching * 1000)
 		if xbmc.Player().isPlayingAudio() == True:
 			currentlyPlayingTitle = xbmc.Player().getMusicInfoTag().getTitle()
 			print currentlyPlayingTitle + " started playing"
@@ -51,7 +55,7 @@ class MyPlayer( xbmc.Player ) :
 				xbmc.PlayList(0).clear()
 				xbmc.executebuiltin('XBMC.ActivateWindow(10500)')
 				xbmc.PlayList(0).add(url= xbmc.Player().getMusicInfoTag().getURL())
-			self.foundTracks += [currentlyPlayingTitle + '|' + currentlyPlayingArtist]
+				self.addedTracks += [xbmc.Player().getMusicInfoTag().getURL()]
 			#print "Start looking for similar tracks"
 			self.fetch_similarTracks(currentlyPlayingTitle,currentlyPlayingArtist)
 	
@@ -66,13 +70,14 @@ class MyPlayer( xbmc.Player ) :
 		WebSock.close()                     # Closes connection to url
 
 		xbmc.executehttpapi("setresponseformat(openRecordSet;<recordset>;closeRecordSet;</recordset>;openRecord;<record>;closeRecord;</record>;openField;<field>;closeField;</field>)");
-
-		similarTracks = re.findall("<track>.+?<name>(.+?)</name>.+?<artist>.+?<name>(.+?)</name>.+?</artist>.+?</track>", WebHTML, re.DOTALL )
+		#print WebHTML
+		similarTracks = re.findall("<track>.+?<name>(.+?)</name>.+?<match>(.+?)</match>.+?<artist>.+?<name>(.+?)</name>.+?</artist>.+?</track>", WebHTML, re.DOTALL )
 		random.shuffle(similarTracks)
+		foundArtists = []
 		countTracks = len(similarTracks)
 		#print "Count: " + str(countTracks)
-		for similarTrackName, similarArtistName in similarTracks:
-			#print "Looking for: " + similarTrackName + " - " + similarArtistName
+		for similarTrackName, matchValue, similarArtistName in similarTracks:
+			#print "Looking for: " + similarTrackName + " - " + similarArtistName + " - " + matchValue
 			similarTrackName = similarTrackName.replace("+"," ").replace("("," ").replace(")"," ").replace("&quot","'").replace("'","''").replace("&amp;","and")
 			similarArtistName = similarArtistName.replace("+"," ").replace("("," ").replace(")"," ").replace("&quot","'").replace("'","''").replace("&amp;","and")
 			sql_music = "select strTitle, strArtist, strAlbum, strPath, strFileName from songview where strTitle LIKE '%%" + similarTrackName + "%%' and strArtist LIKE '%%" + similarArtistName + "%%' order by random() limit 1"
@@ -86,18 +91,22 @@ class MyPlayer( xbmc.Player ) :
 				trackTitle = fields[0]
 				trackPath = fields[3] + fields[4]
 				print "Found: " + trackTitle + " by: " + artist
-				if (similarTrackName + '|' + similarArtistName not in self.foundTracks and artist != currentlyPlayingArtist):
-					listitem = xbmcgui.ListItem(trackTitle)
-					cache_name = xbmc.getCacheThumbName( artist )
-					fanart = "special://profile/Thumbnails/Music/%s/%s" % ( "Fanart", cache_name, )
-					listitem.setProperty('fanart_image',fanart)
-					print "Fanart:%s" % fanart
-					xbmc.PlayList(0).add(url=trackPath, listitem=listitem)
-					xbmc.executebuiltin("Container.Refresh")
-					#xbmc.executebuiltin( "AddToPlayList(" + trackPath + ";0)")
-					self.countFoundTracks += 1
-					self.foundTracks += [similarTrackName + '|' + similarArtistName]
-			if (self.countFoundTracks >= 3):
+				if (self.allowtrackrepeat == "true" or (self.allowtrackrepeat == "false" and trackPath not in self.addedTracks)):
+					if (self.preferdifferentartist == "false" or (self.preferdifferentartist == "true" and eval(matchValue) < 0.2 and similarArtistName not in foundArtists)):
+						listitem = xbmcgui.ListItem(trackTitle)
+						cache_name = xbmc.getCacheThumbName( artist )
+						fanart = "special://profile/Thumbnails/Music/%s/%s" % ( "Fanart", cache_name, )
+						listitem.setProperty('fanart_image',fanart)
+						#print "Fanart:%s" % fanart
+						xbmc.PlayList(0).add(url=trackPath, listitem=listitem)
+						self.addedTracks += [trackPath]
+						xbmc.executebuiltin("Container.Refresh")
+						#xbmc.executebuiltin( "AddToPlayList(" + trackPath + ";0)")
+						self.countFoundTracks += 1
+						if (similarArtistName not in foundArtists):
+							foundArtists += [similarArtistName]
+
+			if (self.countFoundTracks >= self.numberoftrackstoadd):
 				break
 			
 		if (self.countFoundTracks == 0):
@@ -110,7 +119,8 @@ class MyPlayer( xbmc.Player ) :
 		xbmc.executebuiltin('SetCurrentPlaylist(0)')
 
 def addauto(newentry, scriptcode):
-	autoexecfile = "special://masterprofile/autoexec.py"
+	autoexecfile = xbmc.translatePath('special://home/userdata/autoexec.py')
+	#autoexecfile = "special://masterprofile/autoexec.py"
 	if exists(autoexecfile):
 		fh = open(autoexecfile)
 		lines = []
@@ -129,12 +139,16 @@ def addauto(newentry, scriptcode):
 		f.close()
 	else:
 		f = open(autoexecfile, "w")
+		f.write("import time" + "#" + scriptcode + "\n")
+		f.write("time.sleep(2)" + "#" + scriptcode + "\n")
+		f.write("import os" + "#" + scriptcode + "\n")
 		f.write("import xbmc" + "#" + scriptcode + "\n")
 		f.write(newentry + "#" + scriptcode + "\n")
 		f.close()
 
 def removeauto(scriptcode):
-	autoexecfile = "special://masterprofile/autoexec.py"
+	autoexecfile = xbmc.translatePath('special://home/userdata/autoexec.py')
+	#autoexecfile = "special://masterprofile/autoexec.py"
 	if exists(autoexecfile):
 		fh = open(autoexecfile)
 		lines = [ line for line in fh if not line.strip().endswith("#" + scriptcode) ]
