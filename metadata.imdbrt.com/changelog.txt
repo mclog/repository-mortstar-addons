@@ -1,3 +1,6 @@
+[B]1.3.3[/B]
+- Fixed: Brought inline with Team XBMC's IMDb scraper changes (version 2.2.0) i.e. "Better USA/International title recognition + make NfoUrl imdb site independent"
+
 [B]1.3.2[/B]
 - Fixed: 'No consensus yet.' at Rotten Tomatoes returns no value for correct fallback to IMDb outline
 
@@ -9,7 +12,7 @@
 - Added: Choose certification from different countries (initially available USA, UK and Australia)
 
 [B]1.2.2[/B]
-- Fixed: Brought up-to-date with Team XBMC's IMDb scraper changes (version 2.1.9) i.e. "fixed: actor roles and remove scraping of imdb trailers"
+- Fixed: Brought inline with Team XBMC's IMDb scraper changes (version 2.1.9) i.e. "fixed: actor roles and remove scraping of imdb trailers"
 
 [B]1.2.0[/B]
 - Changed: Rotten Tomatoes functions extracted to external scraping library
