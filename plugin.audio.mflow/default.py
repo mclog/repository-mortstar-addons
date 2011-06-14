@@ -221,6 +221,22 @@ elif "Your Playlists" in action:
 	else:
 	 cancel=1
 
+elif "Trending Playlists" in action:
+	auth=action.split(":",2)
+	results=creator.mflowtrendingplaylistsget()
+	if results!=0: 
+	 sender.sendartists(creator.mflowplaylists(results,auth[1],auth[2]))
+	else:
+	 cancel=1
+
+elif "Followed Users' Playlists" in action:
+	auth=action.split(":",2)
+	results=creator.mflowfollowedplaylistsget(auth[2])
+	if results!=0: 
+	 sender.sendartists(creator.mflowplaylists(results,auth[1],auth[2]))
+	else:
+	 cancel=1
+
 elif "Your Flows" in action:
 	auth=action.split(":",2)
 	results=creator.mflowuserflows(auth[1],auth[2])
@@ -305,8 +321,7 @@ elif "albumsongs" in action:
   query="xalbumsongsx"
   sender.send(creator.mflowtrack(results, query))
 
-elif "viewplaylist" in action:
-  print "firing"
+elif "viewplaylist:" in action:
   id=action.split(":")
   results=creator.playlistflows(id[1],id[2],id[3])
   if results!="":
@@ -314,6 +329,20 @@ elif "viewplaylist" in action:
   else:
    sender.userfolders(id[2],id[3])
    doinguserfolders=1
+
+elif "viewplaylists" in action:
+  id=action.split(":")
+  del id[0]
+  sessionid=id[-1]
+  del id[-1]
+  userid=id[-1] 
+  del id[-1] 
+  results=[]
+  for playlistm in id:	
+	results=creator.playlistflows(playlistm,userid,sessionid, results)
+  if results!="":
+   print results
+   sender.send(creator.mflowflow(results))
 
 elif "Enter a Tag" in action: 
 	query=get_keyboard(default="", heading="Enter a Tag (including the #)")

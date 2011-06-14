@@ -40,7 +40,7 @@
 </addon>
 
 <addon id="plugin.audio.mflow"
-	   version="0.4.1"
+	   version="0.4.2"
 	   name="mFlow"
 	   provider-name="Sam Price">
 	<requires>

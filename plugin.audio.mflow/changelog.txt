@@ -1,5 +1,9 @@
+[B]Version 0.4.2[/B]
+- View Trending Playlists
+- View Followed Users' Playlists
+
 [B]Version 0.4.1[/B]
-- Log into mFlow automatically if user and password set.
+- Log into mFlow automatically if user and password set
 - Respect user's chosen number of items for playlists
 
 [B]Version 0.4[/B]

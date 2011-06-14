@@ -161,6 +161,23 @@ class creator:
 		else:
 			return 0
 
+	def mflowtrendingplaylistsget(self):
+		URL=u"http://ws.mflow.com/DigitalDistribution.UserCatalogue.Host.WebService/Public/json/SyncReply/GetDiscoverPlaylists?DiscoverPlaylistType=Trending&Take="+self.take
+		result=simplejson.load(urllib.urlopen(URL))
+		if result["TotalCount"]>0:
+			return result["UserPlaylists"]
+		else:
+			return 0
+
+	def mflowfollowedplaylistsget(self, userid):
+		URL=u"http://ws.mflow.com/DigitalDistribution.UserCatalogue.Host.WebService/Public/json/SyncReply/GetDiscoverPlaylists?DiscoverPlaylistType=Following&Take="+self.take+"&UserId="+userid
+		result=simplejson.load(urllib.urlopen(URL))
+		if result["TotalCount"]>0:
+			return result["UserPlaylists"]
+		else:
+			return 0
+
+
 	def mflowtracklatest(self):
 		import datetime
 		URL=u"http://ws.mflow.com/DigitalDistribution.SearchIndex.Host.WebService/Public/Json/SyncReply/SearchFlows?After="+datetime.date.isoformat(datetime.datetime.now())+"&Take="+self.take
@@ -185,19 +202,42 @@ class creator:
 	def mflowplaylists(self, results, sessionid, userid):
 		listing=[]
 		for res in results:
-			label=res['Name']
-			uri=u"plugin://plugin.audio.mflow?action=viewplaylist:"+str(res["Id"])+":"+str(sessionid)+":"+str(userid)
-			#art="http://fs.mflow.com/"+res["RelativeArtistArtPath"]
-			listing.append([label,uri])
+			if " pt." in res['Name']:
+				label=listing[-1][0]
+				jigsaw=listing[-1][1].split(":")
+				del jigsaw[0]
+				del jigsaw[0]
+				sessionid=jigsaw[-1]
+				del jigsaw[-1]
+				userid=jigsaw[-1]
+				del jigsaw[-1]
+				uri=u"plugin://plugin.audio.mflow?action=viewplaylists:"
+				for pieces in jigsaw:
+					uri+=str(pieces)
+					uri+=":"
+				uri+=str(res["Id"])
+				uri+=":"
+				uri+=str(userid)
+				uri+=":"
+				uri+=str(sessionid)
+				listing.pop()
+				listing.append([label,uri])
+			else:
+				label=res['Name']
+				uri=u"plugin://plugin.audio.mflow?action=viewplaylist:"+str(res["Id"])+":"+str(userid)+":"+str(sessionid)
+				#art="http://fs.mflow.com/"+res["RelativeArtistArtPath"]
+				listing.append([label,uri])
+			print uri
 		return listing
 
-	def playlistflows(self, id, sessionid,userid):
+	def playlistflows(self, id, userid,sessionid,listing=[]):
 		URL=u"http://ws.mflow.com/DigitalDistribution.UserCatalogue.Host.WebService/Public/Json/SyncReply/GetUserPlaylistFlows?UserPlaylistId="+str(id)+"&SessionId="+str(sessionid)+"&UserId="+str(userid)+"&Take="+self.take
+		print URL
 		result=simplejson.load(urllib.urlopen(URL))
 		result=simplejson.load(urllib.urlopen(URL))
-		listing=[]	
 		for res in result["PlaylistFlows"]:
 			listing.append(res["Flow"])
+		print listing
 		return listing
 		
 
@@ -365,7 +405,7 @@ class sender:
 	def userfolders(self, sessionid="", userid=""):
 
 		if sessionid!="":
-			for item in ["Your Playlists", "Your Flows", "Favourite User Flows", "Favourite Tag Flows"]:
+			for item in ["Your Playlists", "Your Flows", "Favourite User Flows", "Favourite Tag Flows", "Trending Playlists", "Followed Users' Playlists"]:
 				listItem=xbmcgui.ListItem(item,iconImage=self.noteImg, thumbnailImage=self.noteImg)
 				listItem.setInfo( type="music", infoLabels={ "Title": item } )
 				xbmcplugin.addDirectoryItem(self._pluginId,"plugin://plugin.audio.mflow?action="+item+":"+sessionid+":"+userid,listItem, isFolder=True)
