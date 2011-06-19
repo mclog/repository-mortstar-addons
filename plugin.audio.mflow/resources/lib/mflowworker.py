@@ -113,6 +113,7 @@ class creator:
 		result=simplejson.load(urllib.urlopen(URL))
 		if result["PublicSessionId"]!="00000000-0000-0000-0000-000000000000":
 		 self.userid=result["UserId"]
+		 print "userid:" +self.userid
 		 self.sessionid=result["PublicSessionId"]
 		 dialog = xbmcgui.Dialog()
                  dialog.ok("Success", "Logged in to Mflow")
@@ -126,23 +127,29 @@ class creator:
 	         dialog.ok("Failed", "Couldn't log in to Mflow")
                  return 0
 
-	def mflowtagsget(self):
+	def mflowtagsget(self, userid):
 		import datetime
-		URL=u"http://ws.mflow.com/DigitalDistribution.SearchIndex.Host.WebService/Public/Json/SyncReply/GetTrendingHashTags?Take=50&OnOrBefore="+datetime.date.isoformat(datetime.datetime.now())
+		URL=u"http://ws.mflow.com/DigitalDistribution.UserCatalogue.Host.WebService/Public/json/SyncReply/GetTrendingTags?Take=50&Before="+datetime.date.isoformat(datetime.datetime.now())+"&PreviewUserId="+userid
+		print URL
 		result=simplejson.load(urllib.urlopen(URL))
-		return result["TrendingHashTags"]
+		return result["HashTags"]
 
 	def mflowalbumlatest(self):
 		URL=u"http://ws.mflow.com/DigitalDistribution.UserCatalogue.Host.WebService/Public/JSON/SyncReply/GetHomePage"
 		result=simplejson.load(urllib.urlopen(URL))
 		return result['LatestContent']['Albums']
 
-	def mflowtracktag(self, tag):
+	def mflowtracktag(self, tag,userid):
 		import datetime
-		URL=u"http://ws.mflow.com/DigitalDistribution.SearchIndex.Host.WebService/Public/Json/SyncReply/SearchFlows?HashTags="+tag+"&Take="+self.take
+		if self.take<100:
+			flowtake=self.take
+		else:
+			flowtake=100
+		URL=u"http://ws.mflow.com/DigitalDistribution.UserCatalogue.Host.WebService/Public/json/SyncReply/GetTagFlows?Tag="+urllib.quote_plus(tag.encode('utf-8','ignore'))+"&Take="+str(flowtake)+"&PreviewUserId="+userid
+		print URL
 		result=simplejson.load(urllib.urlopen(URL))
-		if result["FlowPostsTotalCount"]>0:
-			return result['FlowPosts']
+		if result["FlowsTotalCount"]>0:
+			return result['Flows']
 		else:
 			return ""
 
@@ -178,11 +185,17 @@ class creator:
 			return 0
 
 
-	def mflowtracklatest(self):
+	def mflowtracklatest(self,userid):
 		import datetime
-		URL=u"http://ws.mflow.com/DigitalDistribution.SearchIndex.Host.WebService/Public/Json/SyncReply/SearchFlows?After="+datetime.date.isoformat(datetime.datetime.now())+"&Take="+self.take
+		if self.take<100:
+			flowtake=self.take
+		else:
+			flowtake=100
+		URL=u"http://ws.mflow.com/DigitalDistribution.UserCatalogue.Host.WebService/Public/Json/SyncReply/GetLiveFlows?AfterDate="+datetime.date.isoformat(datetime.datetime.now())+"&Take="+str(flowtake)+"&PreviewUserId="+userid
+		print URL
+		#URL=u"http://ws.mflow.com/DigitalDistribution.SearchIndex.Host.WebService/Public/Json/SyncReply/SearchFlows?After="+datetime.date.isoformat(datetime.datetime.now())+"&Take="+self.take
 		result=simplejson.load(urllib.urlopen(URL))
-		return result['FlowPosts']	
+		return result['Flows']	
 
 	def mflowalbumpopular(self):
 		URL=u"http://ws.mflow.com/DigitalDistribution.UserCatalogue.Host.WebService/Public/JSON/SyncReply/GetHomePage?Take="+self.take
@@ -190,11 +203,11 @@ class creator:
 		return result['MostFlowedContent']['Albums']
 
 
-	def mflowtags(self, results):
+	def mflowtags(self, results, userid):
 		listing=[]
 		for res in results:
 			label=res['Name']
-			uri=u"plugin://plugin.audio.mflow?action=viewtag:"+urllib.quote_plus(label.encode('utf-8','ignore'))
+			uri=u"plugin://plugin.audio.mflow?action=viewtag:"+urllib.quote_plus(label.encode('utf-8','ignore'))+":"+userid
 			#art="http://fs.mflow.com/"+res["RelativeArtistArtPath"]
 			listing.append([label,uri])
 		return listing
@@ -409,6 +422,11 @@ class sender:
 				listItem=xbmcgui.ListItem(item,iconImage=self.noteImg, thumbnailImage=self.noteImg)
 				listItem.setInfo( type="music", infoLabels={ "Title": item } )
 				xbmcplugin.addDirectoryItem(self._pluginId,"plugin://plugin.audio.mflow?action="+item+":"+sessionid+":"+userid,listItem, isFolder=True)
+			for item in ["Latest Track Flows","Trending Tags", "Enter a Tag"]:
+				listItem=xbmcgui.ListItem(item,iconImage=self.hashImg, thumbnailImage=self.hashImg)
+				listItem.setInfo( type="music", infoLabels={ "Title": item } )
+				xbmcplugin.addDirectoryItem(self._pluginId,"plugin://plugin.audio.mflow?action="+item+":"+userid,listItem, isFolder=True)
+				
 		else:
 			listItem=xbmcgui.ListItem("Login",iconImage=self.noteImg, thumbnailImage=self.noteImg)
 			xbmcplugin.addDirectoryItem(self._pluginId,"plugin://plugin.audio.mflow?action=Login",listItem, isFolder=True)
@@ -421,11 +439,7 @@ class sender:
 			listItem=xbmcgui.ListItem(item,iconImage=self.discImg, thumbnailImage=self.discImg)
 			listItem.setInfo( type="music", infoLabels={ "Title": item } )
 			xbmcplugin.addDirectoryItem(self._pluginId,"plugin://plugin.audio.mflow?action="+item,listItem, isFolder=True)
-		for item in ["Latest Track Flows", "Trending Tags", "Enter a Tag"]:
-			listItem=xbmcgui.ListItem(item,iconImage=self.hashImg, thumbnailImage=self.hashImg)
-			listItem.setInfo( type="music", infoLabels={ "Title": item } )
-			xbmcplugin.addDirectoryItem(self._pluginId,"plugin://plugin.audio.mflow?action="+item,listItem, isFolder=True)
-				
+		
 			
 
 	def sendartists(self,listing): 

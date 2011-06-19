@@ -175,18 +175,22 @@ elif action=="Most Flowed Albums":
          dialog.ok("Error", "No results found")
 	 cancel=1
 
-elif action=="Latest Track Flows":
-	results=creator.mflowtracklatest()
+elif "Latest Track Flows" in action:
+	userid=action.split(":",1)[1]
+	results=creator.mflowtracklatest(userid)
 	if results!="":
+	 print results
 	 sender.send(creator.mflowflow(results))
 	else:
 	 dialog = xbmcgui.Dialog()
          dialog.ok("Error", "No results found")
 	 cancel=1
 
-elif action=="Trending Tags":
-	results=creator.mflowtagsget()
-	sender.sendartists(creator.mflowtags(results))
+elif "Trending Tags" in action:
+	auth=action.split(":",1)
+	userid=auth[1]
+	results=creator.mflowtagsget(userid)
+	sender.sendartists(creator.mflowtags(results,userid))
 
 elif action=="Login":
 	
@@ -299,8 +303,10 @@ elif "playplaylist" in action:
 	cancel=1
 
 elif "viewtag" in action:
-  tag=action.split(":",1)[1]
-  results=creator.mflowtracktag(tag)
+  tag=action.split(":")[1]
+  print action.split(":")
+  userid=action.split(":")[2]
+  results=creator.mflowtracktag(tag,userid)
   if results!="":
    sender.send(creator.mflowflow(results))
   else:
@@ -345,9 +351,12 @@ elif "viewplaylists" in action:
    sender.send(creator.mflowflow(results))
 
 elif "Enter a Tag" in action: 
-	query=get_keyboard(default="", heading="Enter a Tag (including the #)")
+	query=get_keyboard(default="", heading="Enter a Tag (excluding the '#')")
   	if query!='':
-       	 results=creator.mflowtracktag(query)
+	 query="#"+query
+	 print query
+	 auth=action.split(":")
+       	 results=creator.mflowtracktag(query,auth[1])
          if results!='':
 	  sender.send(creator.mflowflow(results))
        	 else: 
