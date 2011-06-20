@@ -7,6 +7,7 @@ import os
 import random
 import httplib, urllib, urllib2
 import sys, time
+import threading, thread
 import xbmc, xbmcgui, xbmcaddon
 from urllib import quote_plus, unquote_plus
 import re
@@ -19,6 +20,7 @@ class MyPlayer( xbmc.Player ) :
 	addedTracks = []
 	currentSeedingTrack = 0
 	firstRun = 0
+	timeStarted = time.time()
 	SCRIPT_NAME = "LAST.FM Playlist Generator"
 
 	
@@ -27,6 +29,9 @@ class MyPlayer( xbmc.Player ) :
 	preferdifferentartist = __settings__.getSetting( "preferdifferentartist" )
 	numberoftrackstoadd = ( 1, 3, 5, 10, )[ int( __settings__.getSetting( "numberoftrackstoadd" ) ) ]
 	delaybeforesearching= ( 2, 10, 30, )[ int( __settings__.getSetting( "delaybeforesearching" ) ) ]
+	timer = None
+
+
 	apiPath = "http://ws.audioscrobbler.com/2.0/?api_key=71e468a84c1f40d4991ddccc46e40f1b"
 	
 	def __init__ ( self ):
@@ -38,17 +43,14 @@ class MyPlayer( xbmc.Player ) :
 		removeauto('lastfmplaylistgeneratorpm')
 		addauto("if os.path.exists('" + os.path.normpath(process).replace('\\','\\\\') + "'):#lastfmplaylistgeneratorpm\n\tos.remove('" + os.path.normpath(process).replace('\\','\\\\') + "')","lastfmplaylistgeneratorpm")
 		xbmc.executebuiltin("Notification(" + self.SCRIPT_NAME+",Start by playing a song)")
-		#print "init MyPlayer"
 	
-	def onPlayBackStarted(self):
-		print "onPlayBackStarted waiting:  " + str(self.delaybeforesearching) +" seconds"
-		xbmc.sleep(self.delaybeforesearching * 1000)
+	def startPlayBack(self):
+		print "onPlayBackStarted started"
 		if xbmc.Player().isPlayingAudio() == True:
 			currentlyPlayingTitle = xbmc.Player().getMusicInfoTag().getTitle()
 			print currentlyPlayingTitle + " started playing"
 			currentlyPlayingArtist = xbmc.Player().getMusicInfoTag().getArtist()
 			self.countFoundTracks = 0
-			#self.foundTracks = []
 			if (self.firstRun == 1):
 				self.firstRun = 0
 				#print "firstRun - clearing playlist"
@@ -58,7 +60,15 @@ class MyPlayer( xbmc.Player ) :
 				self.addedTracks += [xbmc.Player().getMusicInfoTag().getURL()]
 			#print "Start looking for similar tracks"
 			self.fetch_similarTracks(currentlyPlayingTitle,currentlyPlayingArtist)
-	
+
+	def onPlayBackStarted(self):
+		print "onPlayBackStarted waiting:  " + str(self.delaybeforesearching) +" seconds"
+		if (self.timer is not None and self.timer.isAlive()):
+			self.timer.cancel()
+			
+		self.timer = threading.Timer(self.delaybeforesearching,self.startPlayBack)
+		self.timer.start()
+
 	def fetch_similarTracks( self, currentlyPlayingTitle, currentlyPlayingArtist ):
 		apiMethod = "&method=track.getsimilar"
 

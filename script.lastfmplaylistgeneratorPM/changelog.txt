@@ -16,4 +16,5 @@
 	Prefer different artist
 	Number of tracks to add
 	Dealy before searching
-	
+1.0.6
+- Fixed: Delay before searching did not cancel when starting new track
