@@ -29,6 +29,7 @@ class MyPlayer( xbmc.Player ) :
 	preferdifferentartist = __settings__.getSetting( "preferdifferentartist" )
 	numberoftrackstoadd = ( 1, 3, 5, 10, )[ int( __settings__.getSetting( "numberoftrackstoadd" ) ) ]
 	delaybeforesearching= ( 2, 10, 30, )[ int( __settings__.getSetting( "delaybeforesearching" ) ) ]
+	limitlastfmresult= ( 50, 100, 250, )[ int( __settings__.getSetting( "limitlastfmresult" ) ) ]
 	timer = None
 
 
@@ -70,7 +71,7 @@ class MyPlayer( xbmc.Player ) :
 		self.timer.start()
 
 	def fetch_similarTracks( self, currentlyPlayingTitle, currentlyPlayingArtist ):
-		apiMethod = "&method=track.getsimilar"
+		apiMethod = "&method=track.getsimilar&limit=" + str(self.limitlastfmresult)
 
 		# The url in which to use
 		Base_URL = self.apiPath + apiMethod + "&artist=" + urllib.quote_plus(currentlyPlayingArtist) + "&track=" + urllib.quote_plus(currentlyPlayingTitle)
@@ -85,12 +86,12 @@ class MyPlayer( xbmc.Player ) :
 		random.shuffle(similarTracks)
 		foundArtists = []
 		countTracks = len(similarTracks)
-		#print "Count: " + str(countTracks)
+		print "Count: " + str(countTracks)
 		for similarTrackName, matchValue, similarArtistName in similarTracks:
 			#print "Looking for: " + similarTrackName + " - " + similarArtistName + " - " + matchValue
 			similarTrackName = similarTrackName.replace("+"," ").replace("("," ").replace(")"," ").replace("&quot","'").replace("'","''").replace("&amp;","and")
 			similarArtistName = similarArtistName.replace("+"," ").replace("("," ").replace(")"," ").replace("&quot","'").replace("'","''").replace("&amp;","and")
-			sql_music = "select strTitle, strArtist, strAlbum, strPath, strFileName from songview where strTitle LIKE '%%" + similarTrackName + "%%' and strArtist LIKE '%%" + similarArtistName + "%%' order by random() limit 1"
+			sql_music = "select strTitle, strArtist, strAlbum, strPath, strFileName, strThumb from songview where strTitle LIKE '%%" + similarTrackName + "%%' and strArtist LIKE '%%" + similarArtistName + "%%' order by random() limit 1"
 			music_xml = xbmc.executehttpapi( "QueryMusicDatabase(%s)" % quote_plus( sql_music ), )
 			# separate the records
 			records = re.findall( "<record>(.+?)</record>", music_xml, re.DOTALL )
@@ -99,7 +100,9 @@ class MyPlayer( xbmc.Player ) :
 				fields = re.findall( "<field>(.*?)</field>", item, re.DOTALL )
 				artist = fields[1]
 				trackTitle = fields[0]
+				album = fields[2]
 				trackPath = fields[3] + fields[4]
+				thumb = fields[5]
 				print "Found: " + trackTitle + " by: " + artist
 				if (self.allowtrackrepeat == "true" or (self.allowtrackrepeat == "false" and trackPath not in self.addedTracks)):
 					if (self.preferdifferentartist == "false" or (self.preferdifferentartist == "true" and eval(matchValue) < 0.2 and similarArtistName not in foundArtists)):
@@ -107,6 +110,8 @@ class MyPlayer( xbmc.Player ) :
 						cache_name = xbmc.getCacheThumbName( artist )
 						fanart = "special://profile/Thumbnails/Music/%s/%s" % ( "Fanart", cache_name, )
 						listitem.setProperty('fanart_image',fanart)
+						listitem.setInfo('music', { 'title': trackTitle, 'artist': artist, 'album': album })
+						listitem.setThumbnailImage(thumb)
 						#print "Fanart:%s" % fanart
 						xbmc.PlayList(0).add(url=trackPath, listitem=listitem)
 						self.addedTracks += [trackPath]

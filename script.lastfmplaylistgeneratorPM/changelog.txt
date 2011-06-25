@@ -18,3 +18,9 @@
 	Dealy before searching
 1.0.6
 - Fixed: Delay before searching did not cancel when starting new track
+1.0.7
+- Added: Setting for limiting lastfm result (default 250)
+	Used to get better similarity.
+	Use a lower number for bigger libraries.
+	For smaller libraries, a low number might not give any results.
+- Added: Title, artist, album and thumbnail metadate

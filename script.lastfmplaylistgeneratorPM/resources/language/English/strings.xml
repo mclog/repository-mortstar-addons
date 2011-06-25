@@ -5,4 +5,5 @@
 	<string id="33001">Prefer different artist</string>
 	<string id="33002">Preferred number of tracks to add</string>
 	<string id="33003">Seconds delay before searching</string>
+	<string id="33004">Limit lastfm results&#10;(lower number for better similarity)</string>
 </strings>
