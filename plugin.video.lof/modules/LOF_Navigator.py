@@ -5,6 +5,7 @@ import urllib
 import urllib2
 import cookielib
 
+import xbmc
 import xbmcplugin
 import xbmcgui
 import xbmcaddon
@@ -19,6 +20,7 @@ class LOF_Navigator:
 
     def __init__(self):
         self.artwork = os.path.join(lof_addon.getAddonInfo('path'),'image')
+        self.offline = os.path.join(lof_addon.getAddonInfo('path'),'image\offline')
         self.username=lof_addon.getSetting("username")
         self.password=lof_addon.getSetting("password")
         self.loginData = urllib.urlencode({'amember_login' : self.username,
@@ -47,9 +49,12 @@ class LOF_Navigator:
 
     def play_stream(self, url):
         link = self.login(url)
-	rtmpUrl = __scraper__.build_rtmp_url(link, url)
-	item = xbmcgui.ListItem(path=rtmpUrl)
-        return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)
+        if (__scraper__.channel_online(link) == True):
+	    rtmpUrl = __scraper__.build_rtmp_url(link, url)
+	    item = xbmcgui.ListItem(path=rtmpUrl)
+            return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)
+        else:
+            xbmc.executebuiltin('SlideShow('+self.offline+')')
 
     def add_nav_item(self, slist, isPlayable, chanId, isfolder, playUrl, mode):
         label = ''.join(slist)

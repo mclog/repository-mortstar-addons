@@ -18,7 +18,7 @@ class LOF_Scraper:
         self.scheduleurl = ''.join([self.baseurl, 'schedule.php'])
         self.swfurl = ' swfUrl=http://www.livesporton.net/player2.swf live=true'
         # Regex Patterns
-        self.unapwd_regex = '<h3 align="left">Welcome,<b><i> (.+?)</i>'
+        self.unapwd_regex = '<td width="85%">Welcome, (.+?)&nbsp;</td>'
         self.sub_regex = '<a href="http://www.liveonlinefooty.com/watchlive/">(.+?)</a>'
         self.rtmp_regex = '\'streamer\',\'(.+?)\'\)'
         self.playpath_regex = '\'file\',\'(.+?)\'\)'
@@ -28,7 +28,9 @@ class LOF_Scraper:
         self.match_time_regex = '<td width="100" align="center" valign="middle">(.+?):(.+?)</td>'
         self.match_date_regex = '<td width="100" align="center" valign="middle">(.+?) (.+?) (.+?)</td>'
         self.match_comp_regex = '<td align="left" valign="top"><span class="title">(.+?)</span><br/>(.+?)<br />'
-        self.match_chan_regex = '<a href="watchlive/\?channel(.+?).php">(.+?)</a>'
+        self.match_chan_regex = '<a href="http://www.liveonlinefooty.com/watchlive/\?channel(.+?).php">(.+?)</a>'
+        self.offline_regex = 'offline.jpg'
+
         # Regex Statements
         self.unapwd = re.compile(self.unapwd_regex, re.DOTALL|re.M)
         self.sub = re.compile(self.sub_regex, re.DOTALL|re.M)
@@ -41,6 +43,7 @@ class LOF_Scraper:
         self.matchcomp = re.compile(self.match_comp_regex, re.DOTALL|re.M)
         self.matchdate = re.compile(self.match_date_regex)
         self.matchchan = re.compile(self.match_chan_regex, re.DOTALL|re.M)
+        self.offline = re.compile(self.offline_regex, re.DOTALL|re.M)
         
     def build_rtmp_url(self, link, channelurl):
         rtmppath = self.rtmp.search(link).group(1)
@@ -141,3 +144,9 @@ class LOF_Scraper:
             return False
         else:
             return True
+
+    def channel_online(self, link):
+        if self.offline.search(link) == None:
+            return True
+        else:
+            return False

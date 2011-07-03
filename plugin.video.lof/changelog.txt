@@ -1,3 +1,9 @@
+[B]Version 1.6.3[/B]
+- Fixed problem with scraping event links
+
+[B]Version 1.6.2[/B]
+- Fixed problem with username authentication
+
 [B]Version 1.6.1[/B]
 - Fixed new channel url scraping
 - new fanart courtesy of mortstar
