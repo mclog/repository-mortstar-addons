@@ -1,0 +1,5 @@
+[B]Version 1.0.0[/B]
+
+- Site login and authentication.
+- Basic playback of Channel 1 - 8.
+- Automatic Scraping of RTMP Feeds.
