@@ -110,7 +110,7 @@
 
 <addon id="script.lastfmplaylistgeneratorPM"
        name="Last.FM Playlist Generator (Partymode)"
-       version="1.0.7"
+       version="1.0.8"
        provider-name="ErlendSB">
   <requires>
     <import addon="xbmc.python" version="1.0"/>

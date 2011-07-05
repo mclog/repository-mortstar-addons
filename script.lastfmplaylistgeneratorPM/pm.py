@@ -55,9 +55,15 @@ class MyPlayer( xbmc.Player ) :
 			if (self.firstRun == 1):
 				self.firstRun = 0
 				#print "firstRun - clearing playlist"
+				album = xbmc.Player().getMusicInfoTag().getAlbum()
+				cache_name = xbmc.getCacheThumbName(os.path.dirname(xbmc.Player().getMusicInfoTag().getURL()))
+				print "Playing file: %s" % xbmc.Player().getMusicInfoTag().getURL()
+				thumb = "special://profile/Thumbnails/Music/%s/%s" % ( cache_name[:1], cache_name, )
+				duration = xbmc.Player().getMusicInfoTag().getDuration()
+				listitem = self.getListItem(currentlyPlayingTitle,currentlyPlayingArtist,album,thumb,duration)
 				xbmc.PlayList(0).clear()
 				xbmc.executebuiltin('XBMC.ActivateWindow(10500)')
-				xbmc.PlayList(0).add(url= xbmc.Player().getMusicInfoTag().getURL())
+				xbmc.PlayList(0).add(url= xbmc.Player().getMusicInfoTag().getURL(), listitem = listitem)
 				self.addedTracks += [xbmc.Player().getMusicInfoTag().getURL()]
 			#print "Start looking for similar tracks"
 			self.fetch_similarTracks(currentlyPlayingTitle,currentlyPlayingArtist)
@@ -91,7 +97,7 @@ class MyPlayer( xbmc.Player ) :
 			#print "Looking for: " + similarTrackName + " - " + similarArtistName + " - " + matchValue
 			similarTrackName = similarTrackName.replace("+"," ").replace("("," ").replace(")"," ").replace("&quot","'").replace("'","''").replace("&amp;","and")
 			similarArtistName = similarArtistName.replace("+"," ").replace("("," ").replace(")"," ").replace("&quot","'").replace("'","''").replace("&amp;","and")
-			sql_music = "select strTitle, strArtist, strAlbum, strPath, strFileName, strThumb from songview where strTitle LIKE '%%" + similarTrackName + "%%' and strArtist LIKE '%%" + similarArtistName + "%%' order by random() limit 1"
+			sql_music = "select strTitle, strArtist, strAlbum, strPath, strFileName, strThumb, iDuration from songview where strTitle LIKE '%%" + similarTrackName + "%%' and strArtist LIKE '%%" + similarArtistName + "%%' order by random() limit 1"
 			music_xml = xbmc.executehttpapi( "QueryMusicDatabase(%s)" % quote_plus( sql_music ), )
 			# separate the records
 			records = re.findall( "<record>(.+?)</record>", music_xml, re.DOTALL )
@@ -103,20 +109,14 @@ class MyPlayer( xbmc.Player ) :
 				album = fields[2]
 				trackPath = fields[3] + fields[4]
 				thumb = fields[5]
+				duration = int(fields[6])
 				print "Found: " + trackTitle + " by: " + artist
 				if (self.allowtrackrepeat == "true" or (self.allowtrackrepeat == "false" and trackPath not in self.addedTracks)):
 					if (self.preferdifferentartist == "false" or (self.preferdifferentartist == "true" and eval(matchValue) < 0.2 and similarArtistName not in foundArtists)):
-						listitem = xbmcgui.ListItem(trackTitle)
-						cache_name = xbmc.getCacheThumbName( artist )
-						fanart = "special://profile/Thumbnails/Music/%s/%s" % ( "Fanart", cache_name, )
-						listitem.setProperty('fanart_image',fanart)
-						listitem.setInfo('music', { 'title': trackTitle, 'artist': artist, 'album': album })
-						listitem.setThumbnailImage(thumb)
-						#print "Fanart:%s" % fanart
+						listitem = self.getListItem(trackTitle,artist,album,thumb,duration)
 						xbmc.PlayList(0).add(url=trackPath, listitem=listitem)
 						self.addedTracks += [trackPath]
 						xbmc.executebuiltin("Container.Refresh")
-						#xbmc.executebuiltin( "AddToPlayList(" + trackPath + ";0)")
 						self.countFoundTracks += 1
 						if (similarArtistName not in foundArtists):
 							foundArtists += [similarArtistName]
@@ -132,6 +132,16 @@ class MyPlayer( xbmc.Player ) :
 			return False
 			
 		xbmc.executebuiltin('SetCurrentPlaylist(0)')
+		
+	def getListItem(self, trackTitle, artist, album, thumb, duration):
+		listitem = xbmcgui.ListItem(trackTitle)
+		cache_name = xbmc.getCacheThumbName( artist )
+		fanart = "special://profile/Thumbnails/Music/%s/%s" % ( "Fanart", cache_name, )
+		listitem.setProperty('fanart_image',fanart)
+		listitem.setInfo('music', { 'title': trackTitle, 'artist': artist, 'album': album, 'duration': duration })
+		listitem.setThumbnailImage(thumb)
+		print "Fanart:%s" % fanart
+		return listitem
 
 def addauto(newentry, scriptcode):
 	autoexecfile = xbmc.translatePath('special://home/userdata/autoexec.py')
