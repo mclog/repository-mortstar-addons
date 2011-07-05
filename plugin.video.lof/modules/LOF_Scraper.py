@@ -49,12 +49,12 @@ class LOF_Scraper:
         rtmppath = self.rtmp.search(link).group(1)
         playpath = self.playpath.search(link).group(1)
         appurl = self.appurl.search(link).group(2)
-        urlhash = self.urlhash.search(link).group(1)
+#        urlhash = self.urlhash.search(link).group(1)
         rtmpurl = ''.join([rtmppath,
                             ' playpath=', playpath,
                             ' app=', appurl,
                             ' pageURL=', channelurl,
-                            '?hash=', urlhash,
+#                            '?hash=', urlhash,
                             self.swfurl])
         return rtmpurl
 
