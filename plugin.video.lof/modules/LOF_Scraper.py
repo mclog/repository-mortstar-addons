@@ -25,8 +25,8 @@ class LOF_Scraper:
         self.appurl_regex = 'rtmp://(.+?)/(.+?)\'\)'
         self.urlhash_regex = 'hash=(.+?)&updateIt=true'
         self.schedule_regex = '<div id="mycss.">(.+?)</div>'
-        self.match_time_regex = '<td width="100" align="center" valign="middle">(.+?):(.+?)</td>'
-        self.match_date_regex = '<td width="100" align="center" valign="middle">(.+?) (.+?) (.+?)</td>'
+        self.match_time_regex = '<td width="150" align="center" valign="middle">(.+?):(.+?)</td>'
+        self.match_date_regex = '<td width="150" align="center" valign="middle">(.+?) (.+?) (.+?)</td>'
         self.match_comp_regex = '<td align="left" valign="top"><span class="title">(.+?)</span><br/>(.+?)<br />'
         self.match_chan_regex = '<a href="http://www.liveonlinefooty.com/watchlive/\?channel(.+?).php">(.+?)</a>'
         self.offline_regex = 'offline.jpg'
@@ -40,8 +40,8 @@ class LOF_Scraper:
         self.urlhash = re.compile(self.urlhash_regex, re.DOTALL|re.M)
         self.schedule = re.compile(self.schedule_regex, re.DOTALL|re.M)
         self.matchtime = re.compile(self.match_time_regex, re.DOTALL|re.M)
-        self.matchcomp = re.compile(self.match_comp_regex, re.DOTALL|re.M)
         self.matchdate = re.compile(self.match_date_regex)
+        self.matchcomp = re.compile(self.match_comp_regex, re.DOTALL|re.M)
         self.matchchan = re.compile(self.match_chan_regex, re.DOTALL|re.M)
         self.offline = re.compile(self.offline_regex, re.DOTALL|re.M)
         

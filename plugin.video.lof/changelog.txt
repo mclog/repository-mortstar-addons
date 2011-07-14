@@ -1,3 +1,6 @@
+[B]Version 1.6.5[/B]
+- Fixed schedule scraping due to changes in website
+
 [B]Version 1.6.4[/B]
 - Removed hash from rtmp url address
 
