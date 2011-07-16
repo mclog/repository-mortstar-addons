@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <addon id="plugin.audio.mflow" 
-	   version="0.4.3" 
+	   version="0.4.4" 
 	   name="mFlow" 
 	   provider-name="Sam Price"> 
 	<requires>

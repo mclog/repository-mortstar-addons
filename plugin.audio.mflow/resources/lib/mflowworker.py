@@ -5,6 +5,7 @@ import xbmcgui
 import dircache
 import fnmatch
 import urllib
+import urllib2
 import simplejson
 import sys
 
@@ -110,21 +111,17 @@ class creator:
 		self.userid=""
 		self.sessionid=""
 		URL=u"https://ws.mflow.com/DigitalDistribution.UserCatalogue.Host.WebService/Public/Json/SyncReply/GetLoginAuth?UserName="+username+"&Password="+password
-		result=simplejson.load(urllib.urlopen(URL))
+		result=simplejson.load(urllib2.urlopen(URL))
 		if result["PublicSessionId"]!="00000000-0000-0000-0000-000000000000":
 		 self.userid=result["UserId"]
 		 print "userid:" +self.userid
 		 self.sessionid=result["PublicSessionId"]
-		 dialog = xbmcgui.Dialog()
-                 dialog.ok("Success", "Logged in to Mflow")
 		 sessionidjar = open(self.sessionidJar, 'w')
 		 useridjar=open(self.useridJar, 'w')
 		 simplejson.dump(self.userid, useridjar)
 		 simplejson.dump(self.sessionid,sessionidjar) 
 		 return [self.userid,self.sessionid]
 		else:
-		 dialog=xbmcgui.Dialog()
-	         dialog.ok("Failed", "Couldn't log in to Mflow")
                  return 0
 
 	def mflowtagsget(self, userid):

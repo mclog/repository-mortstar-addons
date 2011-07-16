@@ -106,6 +106,14 @@ if action==None:
          progress = xbmcgui.DialogProgress()
          progress.create("XBMC", "Trying to log into mFlow")
          auth=creator.mflowlogin(username,password)
+	 if len(auth)==2:
+		 progress.update(100,"Logged in to mFlow")
+		 xbmc.sleep(500)
+	 	 progress.close()
+	 else:
+		 progress.update(100,"Failed to log into mFlow")
+	 	 xbmc.sleep(500)
+		 progress.close()
   else:
         auth=""
   if len(auth)==2:
@@ -306,6 +314,8 @@ elif "viewtag" in action:
   tag=action.split(":")[1]
   print action.split(":")
   userid=action.split(":")[2]
+  tag=tag.replace("#", "", 1)
+  tag=tag.replace("%23", "", 1)
   results=creator.mflowtracktag(tag,userid)
   if results!="":
    sender.send(creator.mflowflow(results))

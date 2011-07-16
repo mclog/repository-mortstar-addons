@@ -1,3 +1,7 @@
+[B] Version 0.4.4 [/B]
+Fixed Trending Tags
+Fixed crashes when launching the plugin from Favourites menu
+
 [B] Verion 0.4.3 [/B]
  Fixed the following functions which were broken by changes to mFlow's 
 api:
