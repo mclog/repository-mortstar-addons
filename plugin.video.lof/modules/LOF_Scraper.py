@@ -28,7 +28,7 @@ class LOF_Scraper:
         self.match_time_regex = '<td width="150" align="center" valign="middle">(.+?):(.+?)</td>'
         self.match_date_regex = '<td width="150" align="center" valign="middle">(.+?) (.+?) (.+?)</td>'
         self.match_comp_regex = '<td align="left" valign="top"><span class="title">(.+?)</span><br/>(.+?)<br />'
-        self.match_chan_regex = '<a href="http://www.liveonlinefooty.com/watchlive/\?channel(.+?).php">(.+?)</a>'
+        self.match_chan_regex = '<a href="watchlive/\?channel(.+?).php">(.+?)</a>'
         self.offline_regex = 'offline.jpg'
 
         # Regex Statements
