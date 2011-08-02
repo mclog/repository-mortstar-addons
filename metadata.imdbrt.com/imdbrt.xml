@@ -51,7 +51,7 @@
 				<expression>Top 250 #([0-9]*)&lt;/</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;mpaa&gt;\1&lt;/mpaa&gt;" dest="5+">
-				<expression>MPAA&lt;/a&gt;\)&lt;/h4&gt;\n?([^&lt;]*)</expression>
+				<expression>contentRating&quot;&gt;\n?([^&lt;]*)</expression>
 			</RegExp>
 			<RegExp input="$$2" output="&lt;chain function=&quot;GetIMDBCert&quot;&gt;$$2&lt;/chain&gt;" dest="5+">
 				<expression/>
@@ -78,7 +78,7 @@
 				<expression>"/company/[^&gt;]+&gt;([^&lt;]+)&lt;/a&gt;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;outline&gt;\1&lt;/outline&gt;&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
-				<expression trim="1">&lt;p&gt;\n&lt;p&gt;([^&lt;]+)&lt;/p&gt;</expression>
+				<expression trim="1">description&quot;&gt;\n([^&lt;]+)\n&lt;/p&gt;</expression>
 			</RegExp>
 			<RegExp conditional="rtoutline" input="$$2" output="&lt;chain function=&quot;GetRTOutlineById&quot;&gt;$$2&lt;/chain&gt;" dest="5+">
 				<expression/>
