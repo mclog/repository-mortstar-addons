@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.lof" name="LiveOnlineFooty" version="1.6.6" provider-name="myksterx and mclog">
+<addon id="plugin.video.lof" name="LiveOnlineFooty" version="1.6.7" provider-name="myksterx and mclog">
     <requires>
         <import addon="xbmc.python" version="1.0"/>
     </requires>

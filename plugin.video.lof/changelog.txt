@@ -1,3 +1,6 @@
+[B]Version 1.6.7[/B]
+- Fixed authentication mechanism due to changes in website
+
 [B]Version 1.6.6[/B]
 - Fixed match channel scraping due to changes in website
 

@@ -19,12 +19,13 @@ __scraper__ = LOF_Scraper.LOF_Scraper()
 class LOF_Navigator:
 
     def __init__(self):
-        self.artwork = os.path.join(lof_addon.getAddonInfo('path'),'image')
-        self.offline = os.path.join(lof_addon.getAddonInfo('path'),'image\offline')
-        self.username=lof_addon.getSetting("username")
-        self.password=lof_addon.getSetting("password")
+        self.artwork   = os.path.join(lof_addon.getAddonInfo('path'),'image')
+        self.offline   = os.path.join(lof_addon.getAddonInfo('path'),'image\offline')
+        self.username  = lof_addon.getSetting("username")
+        self.password  = lof_addon.getSetting("password")
         self.loginData = urllib.urlencode({'amember_login' : self.username,
-                                           'amember_pass' : self.password})
+                                           'amember_pass' : self.password,
+                                           'submit' : 'Login'})
 
     def list_channels(self):
         for i in range (1,17):
@@ -68,6 +69,7 @@ class LOF_Navigator:
     def login(self, openurl):
         cj = cookielib.CookieJar()
         opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+        opener.addheaders = [('Referer', 'http://www.liveonlinefooty.com/watchlive/')]
         opener.open(__scraper__.loginurl, self.loginData)
         link = opener.open(openurl).read()
         return link
