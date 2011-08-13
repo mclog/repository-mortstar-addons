@@ -1,3 +1,6 @@
+[B]Version 1.7.1[/B]
+- minor fix to playback from schedule
+
 [B]Version 1.7.0[/B]
 - Added channel name scraping in channel list
 - temporary fix for new streaming mechanism
