@@ -58,7 +58,7 @@
 	</extension>
 </addon>
 
-<addon id="plugin.video.fss" name="FlashSportStreams" version="1.0.0" provider-name="myksterx and mclog">
+<addon id="plugin.video.fss" name="FlashSportStreams" version="1.1.0" provider-name="myksterx and mclog">
     <requires>
         <import addon="xbmc.python" version="1.0"/>
     </requires>
@@ -68,13 +68,13 @@
     <extension point="xbmc.addon.metadata">
         <platform>all</platform>
         <minversion>31632</minversion>
-        <summary lang="en">Watch FlashSportStreams.tv with XBMC</summary>
-        <description lang="en">Watch premium sports streaming services with XBMC. Requires a FlashSportStreams user account. See http://www.flashsportstreams.tv for more details.</description>
+        <summary lang="en">Watch FlashSportStreams.com with XBMC</summary>
+        <description lang="en">Watch premium sports streaming services with XBMC. Requires a FlashSportStreams user account. See http://www.liveonlinefooty.com for more details.</description>
         <disclaimer lang="en">This plugin may not be legal in your country. Please check local laws before use.</disclaimer>
     </extension>
 </addon>
 
-<addon id="plugin.video.lof" name="LiveOnlineFooty" version="1.6.7" provider-name="myksterx and mclog">
+<addon id="plugin.video.lof" name="LiveOnlineFooty" version="1.7.0" provider-name="myksterx and mclog">
     <requires>
         <import addon="xbmc.python" version="1.0"/>
     </requires>

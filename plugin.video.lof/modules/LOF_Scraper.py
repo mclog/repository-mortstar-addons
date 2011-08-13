@@ -12,11 +12,13 @@ class LOF_Scraper:
     def __init__(self):
         # URL's
         self.baseurl = 'http://www.liveonlinefooty.com/'
-        self.channelurl = ''.join([self.baseurl, 'watchlive/channel%s.php'])
+        self.channelurl = ''.join([self.baseurl, 'watchlive/%s'])
         self.loginurl = ''.join([self.baseurl, 'amember/login.php'])
         self.memberurl = ''.join([self.baseurl, 'amember/member.php'])
         self.scheduleurl = ''.join([self.baseurl, 'schedule.php'])
         self.swfurl = ' swfUrl=http://www.livesporton.net/player2.swf live=true'
+        self.channelmenuurl = ''.join([self.baseurl, 'watchlive/channelmenu.php'])
+
         # Regex Patterns
         self.unapwd_regex = '<td width="85%">Welcome, (.+?)&nbsp;</td>'
         self.sub_regex = '<a href="http://www.liveonlinefooty.com/watchlive/">(.+?)</a>'
@@ -30,6 +32,8 @@ class LOF_Scraper:
         self.match_comp_regex = '<td align="left" valign="top"><span class="title">(.+?)</span><br/>(.+?)<br />'
         self.match_chan_regex = '<a href="watchlive/\?channel(.+?).php">(.+?)</a>'
         self.offline_regex = 'offline.jpg'
+        self.channel_regex = '<td height=\"40\" align=\"center\" valign=\"middle\" bgcolor=\".+?\" ><strong><a href=\"(.+?)\" target=\"player\">(.+?)</a>'
+        self.channel_type_regex = '<iframe src=\"http://www.liveonlinefooty.com/channels/stream(.+?).php'
 
         # Regex Statements
         self.unapwd = re.compile(self.unapwd_regex, re.DOTALL|re.M)
@@ -44,18 +48,29 @@ class LOF_Scraper:
         self.matchcomp = re.compile(self.match_comp_regex, re.DOTALL|re.M)
         self.matchchan = re.compile(self.match_chan_regex, re.DOTALL|re.M)
         self.offline = re.compile(self.offline_regex, re.DOTALL|re.M)
+        self.channel = re.compile(self.channel_regex, re.DOTALL|re.M)
+        self.channeltype = re.compile(self.channel_type_regex, re.DOTALL|re.M)
         
     def build_rtmp_url(self, link, channelurl):
-        rtmppath = self.rtmp.search(link).group(1)
-        playpath = self.playpath.search(link).group(1)
-        appurl = self.appurl.search(link).group(2)
-#        urlhash = self.urlhash.search(link).group(1)
-        rtmpurl = ''.join([rtmppath,
-                            ' playpath=', playpath,
-                            ' app=', appurl,
-                            ' pageURL=', channelurl,
-#                            '?hash=', urlhash,
-                            self.swfurl])
+        if self.channeltype.search(link) == None:
+            rtmppath = self.rtmp.search(link).group(1)
+            playpath = self.playpath.search(link).group(1)
+            appurl = self.appurl.search(link).group(2)
+            rtmpurl = ''.join([rtmppath,
+                               ' playpath=', playpath,
+                               ' app=', appurl,
+                               ' pageURL=', channelurl,
+                               self.swfurl])
+        else:
+            channel = self.channeltype.search(link).group(1)
+            rtmppath = 'rtmp://fl2.sz.xlcdn.com/live/_definst_/sz=liveonlinefooty=channel'
+            playpath = 'sz=liveonlinefooty=channel'
+            appurl = 'live/_definst_/'
+            rtmpurl = ''.join([rtmppath, channel,
+                               ' playpath=', playpath, channel,
+                               ' app=', appurl,
+                               ' pageURL=http://www.liveonlinefooty.com/channels/stream', channel, '.php',
+                               self.swfurl])
         return rtmpurl
 
     def get_event_info(self, schedule):
@@ -97,6 +112,17 @@ class LOF_Scraper:
 	orddate = self.date_to_ordinal(tc4.tm_mday)
 	tc5 = time.strftime('%H:%M | %a ' + orddate +' %b', tc4)
 	return tc5
+
+    def channels(self, channelPage):
+        __navigator__ = LOF_Navigator.LOF_Navigator()
+        for each_channel in self.channel.finditer(channelPage):
+            slist = [each_channel.group(2)]
+            isPlayable = 'true'
+            chanId = each_channel.group(1)
+            isFolder=False
+            playUrl = urllib.quote_plus(self.channelurl %chanId)
+            mode = '5'
+            __navigator__.add_nav_item(slist, isPlayable, chanId, isFolder, playUrl, mode)
 
     def schedules(self, schedulePage):
         __navigator__ = LOF_Navigator.LOF_Navigator()

@@ -1,3 +1,7 @@
+[B]Version 1.7.0[/B]
+- Added channel name scraping in channel list
+- temporary fix for new streaming mechanism
+
 [B]Version 1.6.7[/B]
 - Fixed authentication mechanism due to changes in website
 

@@ -28,15 +28,20 @@ class LOF_Navigator:
                                            'submit' : 'Login'})
 
     def list_channels(self):
-        for i in range (1,17):
-            slist = ['Channel ', str(i)]
-            isPlayable = 'true'
-            chanId = str(i)
-            isFolder=False
-            playUrl = urllib.quote_plus(__scraper__.channelurl %chanId)
-            mode = '5'
-            self.add_nav_item(slist, isPlayable, chanId, isFolder, playUrl, mode)
-	xbmcplugin.endOfDirectory(int(sys.argv[1]))
+        channelpage = (urllib2.urlopen(__scraper__.channelmenuurl)).read()
+       	__scraper__.channels(channelpage)
+        xbmcplugin.endOfDirectory(int(sys.argv[1]))
+
+#    def list_channels(self):
+#        for i in range (1,17):
+#            slist = ['Channel ', str(i)]
+#            isPlayable = 'true'
+#            chanId = str(i)
+#            isFolder=False
+#            playUrl = urllib.quote_plus(__scraper__.channelurl %chanId)
+#            mode = '5'
+#            self.add_nav_item(slist, isPlayable, chanId, isFolder, playUrl, mode)
+#	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
     def list_schedule(self):
        	schedulepage = (urllib2.urlopen(__scraper__.scheduleurl)).read()
@@ -62,14 +67,14 @@ class LOF_Navigator:
         listitem = xbmcgui.ListItem(label=label)
         listitem.setInfo('video' , {'title': label})
         listitem.setProperty('IsPlayable', isPlayable)
-        listitem.setIconImage(os.path.join(self.artwork, 'ch%s.png' %chanId))
+#        listitem.setIconImage(os.path.join(self.artwork, 'ch%s.png' %chanId))
         u=sys.argv[0]+"?url="+ playUrl + "&mode=%s" %mode + "&name="+urllib.quote_plus(label)
         xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=listitem, isFolder=isfolder)
 
     def login(self, openurl):
         cj = cookielib.CookieJar()
         opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
-        opener.addheaders = [('Referer', 'http://www.liveonlinefooty.com/watchlive/')]
+        opener.addheaders = [('Referer', 'http://www.liveonlinefooty.com/')]
         opener.open(__scraper__.loginurl, self.loginData)
         link = opener.open(openurl).read()
         return link
