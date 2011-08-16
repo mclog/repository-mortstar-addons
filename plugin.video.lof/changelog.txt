@@ -1,3 +1,7 @@
+[B]Version 1.7.2[/B]
+- fixed channel schedule naming
+- added Live Now section
+
 [B]Version 1.7.1[/B]
 - minor fix to playback from schedule
 

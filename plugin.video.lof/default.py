@@ -28,7 +28,6 @@ from modules import LOF_Navigator
 lof_addon = xbmcaddon.Addon("plugin.video.lof");
 __navigator__ = LOF_Navigator.LOF_Navigator()
 
-
 def get_params():
     param=[]
     paramstring=sys.argv[2]
@@ -73,3 +72,5 @@ elif mode==4:
     __navigator__.list_channel_schedules(url)
 elif mode==5:
     __navigator__.play_stream(url)
+elif mode==6:
+    __navigator__.list_livenow()

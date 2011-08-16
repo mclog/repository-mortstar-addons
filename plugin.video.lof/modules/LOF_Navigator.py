@@ -15,7 +15,6 @@ import LOF_Scraper
 lof_addon = xbmcaddon.Addon("plugin.video.lof");
 __scraper__ = LOF_Scraper.LOF_Scraper()
 
-
 class LOF_Navigator:
 
     def __init__(self):
@@ -28,20 +27,11 @@ class LOF_Navigator:
                                            'submit' : 'Login'})
 
     def list_channels(self):
-        channelpage = (urllib2.urlopen(__scraper__.channelmenuurl)).read()
+        playerpage = self.login(__scraper__.channelmenuurl)
+        channelurl = ''.join([__scraper__.channelmenu.search(playerpage).group(1), '/channelmenu.php'])
+        channelpage = self.login(channelurl)
        	__scraper__.channels(channelpage)
         xbmcplugin.endOfDirectory(int(sys.argv[1]))
-
-#    def list_channels(self):
-#        for i in range (1,17):
-#            slist = ['Channel ', str(i)]
-#            isPlayable = 'true'
-#            chanId = str(i)
-#            isFolder=False
-#            playUrl = urllib.quote_plus(__scraper__.channelurl %chanId)
-#            mode = '5'
-#            self.add_nav_item(slist, isPlayable, chanId, isFolder, playUrl, mode)
-#	xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
     def list_schedule(self):
        	schedulepage = (urllib2.urlopen(__scraper__.scheduleurl)).read()
@@ -98,7 +88,19 @@ class LOF_Navigator:
 	xbmcplugin.addDirectoryItem(int(sys.argv[1]), u, listfolder, isFolder=1)
         xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
+    def list_livenow(self):
+        playerpage = self.login(__scraper__.channelmenuurl)
+        channelurl = ''.join([__scraper__.channelmenu.search(playerpage).group(1), '/channelmenu.php'])
+        channelpage = self.login(channelurl)
+       	__scraper__.livenow(channelpage)
+        xbmcplugin.endOfDirectory(int(sys.argv[1]))
+        
     def menu(self):
+        u=sys.argv[0]+"?url=Live&mode=6"
+	listfolder = xbmcgui.ListItem('Live Now')
+	listfolder.setInfo('video', {'Title': 'Live Now'})
+	xbmcplugin.addDirectoryItem(int(sys.argv[1]), u, listfolder, isFolder=1)
+        
 	u=sys.argv[0]+"?url=Channels&mode=1"
 	listfolder = xbmcgui.ListItem('Channels')
 	listfolder.setInfo('video', {'Title': 'Channels'})
